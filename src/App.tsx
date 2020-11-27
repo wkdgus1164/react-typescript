@@ -4,7 +4,7 @@ import {Typography} from "@material-ui/core";
 
 function App() {
     return (
-        <Typography align="right" variant="h1" component="h2">h1. Heading!</Typography>
+        <Typography align="right" variant="h1" component="h2">h1. Heading</Typography>
     );
 }
 
