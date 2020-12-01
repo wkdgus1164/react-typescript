@@ -14,7 +14,7 @@ echo "  >>>> ${pwd}"
 mkdir -vp ./${Static_PATH}
 
 echo "  >  정적 파일 복사"
-cp ../build/* ./${Static_PATH}
+cp ../dist/* ./${Static_PATH}
 
 cd ./${Static_PATH}
 
