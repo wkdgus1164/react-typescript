@@ -133,7 +133,7 @@ pipeline {
         
         failure {
           echo 'fail Deploy'
-          slackSend (channel: '#jenkins', color: '#00FF00', message: CodeDeploy 호출 실패")
+          slackSend (channel: '#jenkins', color: '#00FF00', message: "CodeDeploy 호출 실패")
         }
       }
     }
