@@ -13,7 +13,8 @@ mkdir -vp ./${React_PATH}
 
 cp -r ../src ./${React_PATH}
 cp -r ../public ./${React_PATH}
-cp ../package* ./${React_PATH}
+cp ../*.json ./${React_PATH}
+cp ../webpack* ./${React_PATH}
 
 cp ./codeDeploy/* ./${React_PATH}
 
