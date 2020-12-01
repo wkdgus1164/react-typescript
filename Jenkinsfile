@@ -48,6 +48,76 @@ pipeline {
       }
   }      
     
+    
+  stage('Static Build') {
+    steps {
+      echo 'Static Build' 
+      dir ('./execute'){ 
+        sh 'sh ./build.sh'
+      }
+    }
+
+    post {
+      success {
+        echo 'successfully Build'
+        slackSend (channel: '#jenkins', color: '#00FF00',  message: "npm bulid 성공 : npm run build Success")
+      }
+    
+      failure {
+        echo 'fail Build'
+        slackSend (channel: '#jenkins', color: '#00FF00', message: "npm bulid 실패 : npm run build Fail")
+      }
+    }
+
+  }
+    
+    stage('S3 Upload'){
+      parallel{
+        
+        stage('React Sever Upload'){
+          steps {
+           echo 'React npm Upload' 
+            dir ('./execute'){ 
+              sh 'sh ./ReactSeverUpload.sh'
+            }
+          }
+          post {
+            success {
+              echo 'successfully React Sever Upload'
+              slackSend (channel: '#jenkins', color: '#00FF00',  message: "React Server S3 업로드 성공 : React Sever Upload")
+            }
+        
+            failure {
+              echo 'fail React Sever Upload'
+              slackSend (channel: '#jenkins', color: '#00FF00', message: "React Server S3 업로드 실패 : React Sever Upload")
+            }
+          }
+        }
+        
+        stage('React Static Upload'){
+          steps {
+            echo 'React Static Build Upload'  
+            dir ('./execute'){ 
+              sh 'sh ./ReactStaticUpload.sh'
+            }
+          }          
+             
+          post {
+            success {
+              echo 'successfully React Static Upload'
+              slackSend (channel: '#jenkins', color: '#00FF00',  message: "React build S3 업로드 성공 : React Static Upload")
+            }
+        
+            failure {
+              echo 'fail React Static Upload'
+              slackSend (channel: '#jenkins', color: '#00FF00', message: "React build S3 업로드 실패 : React Static Upload")
+            }
+          }
+        }
+          
+      }
+    }
+
     stage('End') { 
       
       steps {        
