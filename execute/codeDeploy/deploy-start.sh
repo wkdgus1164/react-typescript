@@ -29,4 +29,4 @@ echo "> npm install"
 $NPM_PATH install
 
 echo "> react 배포"
-nohup $NPM_PATH start $BUILD_PATH
+nohup $NPM_PATH start $BUILD_PATH > /dev/null 2> /dev/null < /dev/null &
