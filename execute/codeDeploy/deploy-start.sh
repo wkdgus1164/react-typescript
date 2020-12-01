@@ -28,8 +28,5 @@ echo $NPM_PATH
 echo "> npm install"
 $NPM_PATH install
 
-echo "> npm run build"
-$NPM_PATH run build
-
 echo "> react 배포"
 nohup $NPM_PATH start $BUILD_PATH > /dev/null 2> /dev/null < /dev/null &
