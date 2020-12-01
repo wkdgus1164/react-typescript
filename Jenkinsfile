@@ -118,7 +118,25 @@ pipeline {
       }
     }
 
-
+    stage('Deploy'){
+      steps{
+        dir('./execute/codeDeploy'){
+          sh 'sh ./deploy.sh'
+        } 
+      }
+      
+      post {
+        success {
+          echo 'successfully Deploy'
+          slackSend (channel: '#jenkins', color: '#00FF00',  message: "CodeDeploy 호출 성공")
+        }
+        
+        failure {
+          echo 'fail Deploy'
+          slackSend (channel: '#jenkins', color: '#00FF00', message: "CodeDeploy 호출 실패")
+        }
+      }
+    }  
     
     stage('End') { 
       
