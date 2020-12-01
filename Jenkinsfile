@@ -49,50 +49,56 @@ pipeline {
   }      
     
     
-  stage('Static Build') {
-    steps {
-      echo 'Static Build' 
-      dir ('./execute'){ 
-        sh 'sh ./build.sh'
-      }
-    }
+  stage('Static Build & Server S3 Upload') {
+    parallel{
+      
+      stage('Static Build){
+        steps {
+          echo 'Static Build' 
+          dir ('./execute'){ 
+            sh 'sh ./build.sh'
+          }
+        }
 
-    post {
-      success {
-        echo 'successfully Build'
-        slackSend (channel: '#jenkins', color: '#00FF00',  message: "npm bulid 성공 : npm run build Success")
-      }
-    
-      failure {
-        echo 'fail Build'
-        slackSend (channel: '#jenkins', color: '#00FF00', message: "npm bulid 실패 : npm run build Fail")
-      }
-    }
+        post {
+          success {
+            echo 'successfully Build'
+            slackSend (channel: '#jenkins', color: '#00FF00',  message: "npm bulid 성공 : npm run build Success")
+          }
 
-  }
-    
-    stage('S3 Upload'){
-      parallel{
-        
-        stage('React Sever Upload'){
-          steps {
-           echo 'React npm Upload' 
+          failure {
+            echo 'fail Build'
+            slackSend (channel: '#jenkins', color: '#00FF00', message: "npm bulid 실패 : npm run build Fail")
+          }
+        }
+      }
+      
+      stage('React Sever Upload'){
+        steps {
+          echo 'React npm Upload' 
             dir ('./execute'){ 
               sh 'sh ./ReactSeverUpload.sh'
             }
           }
-          post {
-            success {
-              echo 'successfully React Sever Upload'
+        post {
+          success {
+            echo 'successfully React Sever Upload'
               slackSend (channel: '#jenkins', color: '#00FF00',  message: "React Server S3 업로드 성공 : React Sever Upload")
             }
         
-            failure {
-              echo 'fail React Sever Upload'
+          failure {
+            echo 'fail React Sever Upload'
               slackSend (channel: '#jenkins', color: '#00FF00', message: "React Server S3 업로드 실패 : React Sever Upload")
-            }
           }
         }
+      }
+      
+    }
+
+  }
+    
+    stage('Static S3 Upload & ColdeDeploy'){
+      parallel{
         
         stage('React Static Upload'){
           steps {
@@ -114,29 +120,31 @@ pipeline {
             }
           }
         }
+        
+        stage('Deploy'){
+          steps{
+            dir('./execute/codeDeploy'){
+              sh 'sh ./deploy.sh'
+          } 
+        }
+      
+          post {
+            success {
+              echo 'successfully Deploy'
+              slackSend (channel: '#jenkins', color: '#00FF00',  message: "CodeDeploy 호출 성공")
+            }
+        
+            failure {
+              echo 'fail Deploy'
+              slackSend (channel: '#jenkins', color: '#00FF00', message: "CodeDeploy 호출 실패")
+            }
+          }
+        }  
           
       }
     }
 
-    stage('Deploy'){
-      steps{
-        dir('./execute/codeDeploy'){
-          sh 'sh ./deploy.sh'
-        } 
-      }
-      
-      post {
-        success {
-          echo 'successfully Deploy'
-          slackSend (channel: '#jenkins', color: '#00FF00',  message: "CodeDeploy 호출 성공")
-        }
-        
-        failure {
-          echo 'fail Deploy'
-          slackSend (channel: '#jenkins', color: '#00FF00', message: "CodeDeploy 호출 실패")
-        }
-      }
-    }  
+
     
     stage('End') { 
       
