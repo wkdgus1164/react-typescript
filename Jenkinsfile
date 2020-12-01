@@ -52,7 +52,7 @@ pipeline {
   stage('Static Build & Server S3 Upload') {
     parallel{
       
-      stage('Static Build){
+      stage('Static Build'){
         steps {
           echo 'Static Build' 
           dir ('./execute'){ 
