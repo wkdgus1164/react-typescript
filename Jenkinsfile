@@ -30,7 +30,7 @@ pipeline {
       steps{
         
         echo 'git clone'       
-        git credentialsId: 'react-git',
+        git credentialsId: 'customReact',
           branch: "${params.branch}",
              url: "${params.url}"
       }
